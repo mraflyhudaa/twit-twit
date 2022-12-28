@@ -5,6 +5,7 @@ import { CreateTweet } from "./CreateTweet";
 import relativeTime from 'dayjs/plugin/relativeTime';
 import updateLocale from 'dayjs/plugin/updateLocale'
 import { useState, useEffect } from 'react'
+import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai'
 
 dayjs.extend(relativeTime)
 dayjs.extend(updateLocale)
@@ -56,6 +57,11 @@ function Tweet({
   tweet: RouterOutputs['tweet']['timeline']['tweets'][number];
 }) {
 
+  const likeMutation = trpc.tweet.like.useMutation().mutateAsync
+  const unlikeMutation = trpc.tweet.unlike.useMutation().mutateAsync
+
+  const hasLiked = tweet.likes.length > 0
+
   return (
     <div className="mb-4 border-b-2 border-gray-500">
       <div className="flex p-2">
@@ -72,10 +78,25 @@ function Tweet({
             <p className="font-bold">{tweet.author.name}</p>
             <p className="text-sm text-gray-400"> - {dayjs(tweet.createdAt).fromNow()}</p>
           </div>
-
           <div>{tweet.text}</div>
         </div>
+      </div>
+      <div className="flex mt-2 p-2">
+        {hasLiked ? (
 
+          <AiFillHeart color='red' size='1.5rem'
+            onClick={() => {
+              if (hasLiked) {
+                unlikeMutation({ tweetId: tweet.id })
+                return
+              }
+              likeMutation({ tweetId: tweet.id })
+            }} />
+        ) : (<AiOutlineHeart color='black' size='1.5rem'
+          onClick={() => {
+            likeMutation({ tweetId: tweet.id })
+          }} />)}
+        <span className="text-sm text-gray-500">{10}</span>
       </div>
     </div>
   )
