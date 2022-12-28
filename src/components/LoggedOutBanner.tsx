@@ -5,9 +5,9 @@ export function LoggedOutBanner() {
 
   const { data: session } = useSession()
 
-  // if(session){
-  //   return null
-  // }
+  if (session) {
+    return null
+  }
 
   return (
     <div className="bg-primary fixed bottom-0 w-full p-4">
